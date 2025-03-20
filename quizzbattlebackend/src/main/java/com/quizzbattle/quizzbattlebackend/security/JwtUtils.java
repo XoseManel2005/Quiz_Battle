@@ -1,4 +1,4 @@
-/*package com.quizzbattle.quizzbattlebackend.security;
+package com.quizzbattle.quizzbattlebackend.security;
 
 import java.util.Date;
 
@@ -53,4 +53,4 @@ public class JwtUtils {
             return false;
         }
     }
-}*/
+}

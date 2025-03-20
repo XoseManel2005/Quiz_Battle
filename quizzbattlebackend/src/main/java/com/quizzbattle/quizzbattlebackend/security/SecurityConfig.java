@@ -11,16 +11,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Desactiva CSRF
+            .csrf(csrf -> csrf.disable()) //desactiva CSRF
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/swagger-ui/**", 
                     "/v3/api-docs/**", 
                     "/swagger-ui.html"
-                ).permitAll() // Permite acceso sin autenticación
+                ).permitAll() //permite acceso sin autenticación
                 .anyRequest().authenticated()
             )
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // No usa sesiones
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); //no usa sesiones
         return http.build();
     }
 }

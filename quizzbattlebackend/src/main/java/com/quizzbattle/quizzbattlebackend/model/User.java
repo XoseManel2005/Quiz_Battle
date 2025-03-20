@@ -52,13 +52,13 @@ public abstract class User implements Serializable {
     /* Nombre de usuario */
     @NotBlank
     @Size(min = MIN_USERNAME, max = MAX_USERNAME)
-    @Column(unique = true, nullable = true)
+    @Column(unique = true, nullable = false)
     protected String username;
 
     /* Email */
     @NotBlank
     @Email
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = true)
     protected String email;
 
     /* Contraseña (Serializada para ocultarla en respuestas JSON) */
