@@ -25,13 +25,11 @@ public class CategoryServiceImpl implements CategoryService{
 	
 	@Override
 	public List<Category> findAll() {
-		// TODO Auto-generated method stub
 		return categoryRepository.findAll();
 	}
 
 	@Override
 	public Category getByName(@NotBlank String name) {
-		// TODO Auto-generated method stub
 		return categoryRepository.findByName(name);
 	}
 
