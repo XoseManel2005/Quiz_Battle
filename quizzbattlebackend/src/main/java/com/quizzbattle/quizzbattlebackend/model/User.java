@@ -124,4 +124,7 @@ public abstract class User implements Serializable {
     public String getInfo() {
         return "User: " + username + " (" + email + ")";
     }
+
+
+
 }

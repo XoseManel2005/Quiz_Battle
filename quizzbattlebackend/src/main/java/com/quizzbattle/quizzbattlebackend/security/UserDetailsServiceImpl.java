@@ -1,25 +1,32 @@
-/*package com.quizzbattle.quizzbattlebackend.security;
+package com.quizzbattle.quizzbattlebackend.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.quizzbattle.quizzbattlebackend.model.User;
 import com.quizzbattle.quizzbattlebackend.repository.UserRepository;
 
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private MessageSource messageSource;
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) {
+		return null;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+		/*User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new NotFoundException(messageSource.getMessage("error.UserService.user.not.found", new String[] { username }, LocaleContextHolder.getLocale())));
 
-        return new UserDetailsImpl(user);
-    }
-}*/
+		return new UserDetailsImpl(user);*/
+	}
+
+}

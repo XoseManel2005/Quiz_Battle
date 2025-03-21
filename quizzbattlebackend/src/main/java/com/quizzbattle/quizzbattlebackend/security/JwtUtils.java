@@ -1,56 +1,100 @@
 package com.quizzbattle.quizzbattlebackend.security;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Component
+@PropertySource("classpath:jwt.properties")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JwtUtils {
 
-    @Value("${jwt.secret}")
-    private String secret;
+	@Value("${jwt.payload_auth}")
+	private String payloadAuth;
 
-    @Value("${jwt.expiration.in.ms}")
-    private long expirationInMs;
+	@Value("${jwt.secret}")
+	private String secret;
 
-    public String generateToken(String email) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expirationInMs);
+	@Value("${jwt.expiration.in.ms}")
+	private long expirationInMs;
 
-        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
+	public String generateToken(String principal, Collection<? extends GrantedAuthority> authorities) {
 
-        return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(key)
-                .compact();
-    }
+		Claims claims = Jwts.claims();
 
-    public String getEmailFromToken(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject();
-    }
+		claims.setSubject(principal);
+		claims.setExpiration(new Date(System.currentTimeMillis() + expirationInMs));
+		claims.put(payloadAuth, authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()));
 
-    public boolean validateToken(String token) {
-        try {
-            SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+		SecretKey signature = Keys.hmacShaKeyFor(secret.getBytes());
+
+		return Jwts.builder().setClaims(claims).signWith(signature).compact();
+	}
+
+	public UsernamePasswordAuthenticationToken getAuthentication(String token) {
+		try {
+			SecretKey signature = Keys.hmacShaKeyFor(secret.getBytes());
+
+			Claims claims = Jwts.parserBuilder().setSigningKey(signature).build().parseClaimsJws(token).getBody();
+
+			String subject = claims.getSubject();
+
+			@SuppressWarnings("unchecked")
+			Collection<? extends GrantedAuthority> authorities = claims.get(payloadAuth, ArrayList.class).stream()
+					.map(auth -> new SimpleGrantedAuthority(auth.toString())).toList();
+
+			return new UsernamePasswordAuthenticationToken(subject, null, authorities);
+		} catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
+			throw new BadCredentialsException("Invalid credentials", ex);
+		} catch (ExpiredJwtException e) {
+			throw e;
+		}
+	}
+
+	public boolean isAdmin() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+		
+		return authorities.stream().anyMatch(ga -> ga.getAuthority().equals("ROLE_ADMIN"));
+	}
+
+	public boolean isClient() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+		
+		return authorities.stream().anyMatch(ga -> ga.getAuthority().equals("ROLE_CLIENT"));
+	}
+	
+	public boolean isAuthUser(String username) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		return username==null?false:username.equals(authentication.getName());
+	}
 }

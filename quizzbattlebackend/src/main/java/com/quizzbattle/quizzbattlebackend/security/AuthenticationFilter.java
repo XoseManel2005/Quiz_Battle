@@ -1,9 +1,10 @@
-/*package com.quizzbattle.quizzbattlebackend.security;
+package com.quizzbattle.quizzbattlebackend.security;
 
 import java.io.IOException;
-import java.util.List;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -18,30 +19,37 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class AuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtils jwtUtils;
+	@Value("${jwt.response.authorization.header}")
+	private String headerAuthorization;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+	@Value("${jwt.response.authorization.value}")
+	private String bearer;
 
-        String token = extractToken(request);
+	@Autowired
+	private JwtUtils jwtUtils;
 
-        if (token != null && jwtUtils.validateToken(token)) {
-            String email = jwtUtils.getEmailFromToken(token);
-            UsernamePasswordAuthenticationToken authentication = 
-                    new UsernamePasswordAuthenticationToken(email, null, List.of());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+			throws ServletException, IOException {
 
-        chain.doFilter(request, response);
-    }
+		String jwtToken = extractToken(request);
 
-    private String extractToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-}*/
+		if (!Strings.isEmpty(jwtToken)) {
+			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = jwtUtils
+					.getAuthentication(jwtToken);
+
+			SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+		}
+
+		chain.doFilter(request, response);
+	}
+
+	private String extractToken(HttpServletRequest request) {
+		String bearerToken = request.getHeader(headerAuthorization);
+		if (StringUtils.hasText(bearerToken) && bearerToken.contains(bearer)) {
+			return bearerToken.replaceFirst(bearer, "").trim();
+		}
+		return null;
+	}
+
+}
