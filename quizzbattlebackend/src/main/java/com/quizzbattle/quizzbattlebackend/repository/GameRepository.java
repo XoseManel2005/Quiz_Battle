@@ -9,10 +9,17 @@ import com.quizzbattle.quizzbattlebackend.model.Player;
 
 public interface GameRepository extends JpaRepository<Game, Long> {
 
-	@Query("SELECT g FROM Game g WHERE (g.player1 = :player OR g.player2 = :player) "
-			+ "ORDER BY CASE WHEN g.turn = :player THEN 0 " + // Primero el turno del jugador actual
-			"WHEN g.turn IS NOT NULL THEN 1 " + // Luego el turno del otro jugador
-			"ELSE 2 END") // Finalmente cuando el turno es NULL
-	List<Game> findAllByPlayerOrderedByTurn(Player player);
+	@Query("""
+		    SELECT g FROM Game g 
+		    WHERE (g.player1 = :player OR g.player2 = :player)
+		    ORDER BY 
+		        CASE 
+		            WHEN g.turn = :player THEN 0 
+		            WHEN g.turn IS NOT NULL THEN 1 
+		            ELSE 2 
+		        END
+		""")
+		List<Game> findAllByPlayerOrderedByTurn(Player player);
+
 
 }

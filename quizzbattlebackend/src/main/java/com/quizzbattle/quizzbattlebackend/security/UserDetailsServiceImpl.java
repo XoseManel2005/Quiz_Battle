@@ -21,12 +21,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) {
-		return null;
 
-		/*User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new NotFoundException(messageSource.getMessage("error.UserService.user.not.found", new String[] { username }, LocaleContextHolder.getLocale())));
-
-		return new UserDetailsImpl(user);*/
+		User user = userRepository.findByUsername(username);
+		return new UserDetailsImpl(user);
 	}
 
 }

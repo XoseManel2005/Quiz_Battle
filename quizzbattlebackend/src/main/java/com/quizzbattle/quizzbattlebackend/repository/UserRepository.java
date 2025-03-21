@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import com.quizzbattle.quizzbattlebackend.model.User;
 
+import jakarta.validation.constraints.NotBlank;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -15,5 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByFilters(String username);
     
     User findByUsername(String username);
+    
+	boolean existsByUsername(@NotBlank String username);
 
 }

@@ -3,11 +3,14 @@ package com.quizzbattle.quizzbattlebackend.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.quizzbattle.quizzbattlebackend.model.Category;
 import com.quizzbattle.quizzbattlebackend.model.Question;
 import com.quizzbattle.quizzbattlebackend.repository.QuestionRepository;
 import com.quizzbattle.quizzbattlebackend.service.QuestionService;
 
+@Service
 public class QuestionServiceImpl implements QuestionService{
 	
 	@Autowired
