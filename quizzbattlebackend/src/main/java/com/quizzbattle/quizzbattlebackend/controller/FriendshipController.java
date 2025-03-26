@@ -54,7 +54,7 @@ public class FriendshipController {
 			@RequestParam(value = "status", required = false) Status status) {
 
 		Player player = (Player) userService.getByUsername(username);
-		return friendshipService.findAllByReciverAndStatus(player, status);
+		return friendshipService.findAllByReceiverAndStatus(player, status);
 	}
 
 }

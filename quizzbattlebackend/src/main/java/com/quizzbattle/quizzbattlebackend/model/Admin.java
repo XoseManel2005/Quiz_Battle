@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 
 /* JPA annotations */
 @Entity
-/* Un admin se identifica en la tabla user con role=ADMIN */
 @DiscriminatorValue(User.ADMIN)
 
 /* Lombok */
