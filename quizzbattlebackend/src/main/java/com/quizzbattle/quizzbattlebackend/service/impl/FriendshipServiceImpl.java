@@ -3,6 +3,8 @@ package com.quizzbattle.quizzbattlebackend.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.quizzbattle.quizzbattlebackend.model.Friendship;
 import com.quizzbattle.quizzbattlebackend.model.Friendship.Status;
@@ -10,6 +12,8 @@ import com.quizzbattle.quizzbattlebackend.repository.FriendshipRepository;
 import com.quizzbattle.quizzbattlebackend.model.Player;
 import com.quizzbattle.quizzbattlebackend.service.FriendshipService;
 
+@Validated
+@Service
 public class FriendshipServiceImpl implements FriendshipService {
 
 	@Autowired
@@ -21,8 +25,8 @@ public class FriendshipServiceImpl implements FriendshipService {
 	}
 
 	@Override
-	public List<Friendship> findAllByReciverAndStatus(Player player, Status status) {
-		return friendshipRepository.findAllByReciverAndStatus(player, status);
+	public List<Friendship> findAllByReceiverAndStatus(Player player, Status status) {
+		return friendshipRepository.findAllByReceiverAndStatus(player, status);
 	}
 
 }

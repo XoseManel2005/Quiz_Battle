@@ -4,8 +4,12 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.quizzbattle.quizzbattlebackend.PasswordSerializer;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -18,11 +22,26 @@ import lombok.experimental.SuperBuilder;
 
 /* JPA annotations */
 @Entity
-@Table(name = "user", indexes = { 
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
+
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY,
+    property = "role",
+    visible = true
+)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Player.class, name = User.PLAYER),
+    @JsonSubTypes.Type(value = Admin.class, name = User.ADMIN)
+})
+/* Swagger */
+@Schema(oneOf = { Admin.class, Player.class }, discriminatorProperty = "role")
+/*@Table(name = "user", indexes = { 
     @Index(name = "idx_role", columnList = "role", unique = false),
     @Index(name = "idx_username", columnList = "username", unique = true),
     @Index(name = "idx_email", columnList = "email", unique = true)
-})
+})*/
 /* Lombok */
 @Data
 @NoArgsConstructor
@@ -88,10 +107,10 @@ public abstract class User implements Serializable {
 	protected Role role;
 
     /* Fechas de registro y actualización */
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = true, updatable = false)
     protected LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     protected LocalDateTime updatedAt;
 
     @Column

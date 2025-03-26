@@ -10,5 +10,5 @@ public interface FriendshipService {
 	
 	List<Friendship> findAll(Player player);
 	
-	List<Friendship> findAllByReciverAndStatus(Player player, Status status);
+	List<Friendship> findAllByReceiverAndStatus(Player player, Status status);
 }

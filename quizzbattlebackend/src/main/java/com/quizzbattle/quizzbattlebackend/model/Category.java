@@ -38,7 +38,6 @@ public class Category {
 	@Column(name = "name", unique = true)
 	private String name;
 
-	@Pattern(regexp = "https?://.*", message = "The image URL must be a valid URL")
 	@NotBlank(message = "Image URL cannot be blank")
 	@Column(name = "image_url")
 	private String imageUrl;
