@@ -38,7 +38,6 @@ public class Category {
 	@Column(name = "name", unique = true)
 	private String name;
 
-	@NotBlank(message = "Image URL cannot be blank")
 	@Column(name = "image_url")
 	private String imageUrl;
 

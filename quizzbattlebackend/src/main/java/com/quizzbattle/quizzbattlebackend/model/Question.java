@@ -61,7 +61,6 @@ public class Question {
     private String wrongOption3;
 
     /* Optional image URL for question */
-    @NotBlank(message = "ImageURL cannot be null")
     @Column(name = "image_url")
     private String imageUrl;
 }
