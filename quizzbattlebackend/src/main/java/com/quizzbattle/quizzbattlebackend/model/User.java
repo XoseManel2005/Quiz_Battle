@@ -37,11 +37,11 @@ import lombok.experimental.SuperBuilder;
 })
 /* Swagger */
 @Schema(oneOf = { Admin.class, Player.class }, discriminatorProperty = "role")
-/*@Table(name = "user", indexes = { 
+@Table(name = "users", indexes = { 
     @Index(name = "idx_role", columnList = "role", unique = false),
     @Index(name = "idx_username", columnList = "username", unique = true),
     @Index(name = "idx_email", columnList = "email", unique = true)
-})*/
+})
 /* Lombok */
 @Data
 @NoArgsConstructor
@@ -75,7 +75,6 @@ public abstract class User implements Serializable {
     protected String username;
 
     /* Email */
-    @NotBlank
     @Email
     @Column(unique = true, nullable = true)
     protected String email;

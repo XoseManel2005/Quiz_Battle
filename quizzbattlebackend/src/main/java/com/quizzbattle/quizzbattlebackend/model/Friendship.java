@@ -1,9 +1,5 @@
 package com.quizzbattle.quizzbattlebackend.model;
 
-import com.quizzbattle.quizzbattlebackend.model.Game.Status;
-
-import cat.institutmarianao.sailing.ws.validation.groups.OnTripCreate;
-import cat.institutmarianao.sailing.ws.validation.groups.OnTripUpdate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,7 +13,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
