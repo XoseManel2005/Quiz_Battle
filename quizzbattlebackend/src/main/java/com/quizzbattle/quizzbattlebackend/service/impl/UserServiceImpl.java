@@ -8,6 +8,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import com.quizzbattle.quizzbattlebackend.model.Player;
 import com.quizzbattle.quizzbattlebackend.model.User;
 import com.quizzbattle.quizzbattlebackend.repository.UserRepository;
 import com.quizzbattle.quizzbattlebackend.service.UserService;
@@ -46,34 +47,37 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User update(@NotNull @Valid User user) {
-		User dbUser = userRepository.findByUsername(user.getUsername());
-		
-		if (dbUser == null) {
-			throw new ValidationException(messageSource.getMessage(
-					"error.UserService.username.not.found", 
-					new String[] { user.getUsername() }, 
-					LocaleContextHolder.getLocale()));
-		}
+	    User dbUser = userRepository.findByUsername(user.getUsername());
+	    
+	    if (dbUser == null) {
+	        throw new ValidationException(messageSource.getMessage(
+	                "error.UserService.username.not.found", 
+	                new String[] { user.getUsername() }, 
+	                LocaleContextHolder.getLocale()));
+	    }
 
-		// Si la contraseña es diferente de null, la actualiza
-		if (user.getPassword() != null) {
-			dbUser.setPassword(user.getPassword());
-		}
+	    // Si la contraseña es diferente de null, la actualiza
+	    if (user.getPassword() != null) {
+	        dbUser.setPassword(user.getPassword());
+	    }
 
-		// Si el email no es null, lo actualiza
-		if (user.getEmail() != null) {
-			dbUser.setEmail(user.getEmail());
-		}
+	    // Si el email no es null, lo actualiza
+	    if (user.getEmail() != null) {
+	        dbUser.setEmail(user.getEmail());
+	    }
 
-		// Si tiene una foto de perfil nueva, la actualiza
-		if (user.getProfilePicture() != null) {
-			dbUser.setProfilePicture(user.getProfilePicture());
-		}
+	    // Si el usuario y dbUser son instancias de Player, actualiza los campos específicos de Player
+	    if (user instanceof Player player && dbUser instanceof Player dbPlayer) {
+	        // Si tiene una foto de perfil nueva, la actualiza
+	        if (player.getProfilePicture() != null) {
+	            dbPlayer.setProfilePicture(player.getProfilePicture());
+	        }
 
-		// Si el token FCM ha cambiado, lo actualiza
-		if (user.getFcmToken() != null) {
-			dbUser.setFcmToken(user.getFcmToken());
-		}
+	        // Si el token FCM ha cambiado, lo actualiza
+	        if (player.getFcmToken() != null) {
+	            dbPlayer.setFcmToken(player.getFcmToken());
+	        }
+	    }
 
 		// Guarda los cambios
 		return userRepository.save(dbUser);

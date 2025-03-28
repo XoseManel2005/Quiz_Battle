@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.quizzbattle.quizzbattlebackend.exception.ForbiddenException;
 import com.quizzbattle.quizzbattlebackend.model.User;
 import com.quizzbattle.quizzbattlebackend.repository.UserRepository;
 import com.quizzbattle.quizzbattlebackend.security.JwtUtils;
 import com.quizzbattle.quizzbattlebackend.security.model.AuthCredentials;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.ws.rs.ForbiddenException;
 
 @Tag(name = "Authentication", description = "Authentication API")
 

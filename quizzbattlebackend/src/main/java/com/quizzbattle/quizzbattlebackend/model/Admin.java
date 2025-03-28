@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 /* Lombok */
 @Data
 @NoArgsConstructor
-@SuperBuilder
+//@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class Admin extends User {
 
@@ -22,7 +22,7 @@ public class Admin extends User {
 
     @Override
     public String getInfo() {
-        return "Administrador: " + this.username + " (" + this.email + ")";
+        return "Administrador: " + this.email;
     }
 
     @Override

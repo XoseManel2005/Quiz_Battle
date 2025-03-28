@@ -27,11 +27,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 
 public class Friendship {
-	public static final String ACCEPTED = "ACCEPTED";
+    public static final String ACCEPTED = "ACCEPTED";
     public static final String PENDING = "PENDING";
 
     public enum Status {
-    	ACCEPTED, PENDING
+        ACCEPTED, PENDING
     }
 
     /* JPA: ID with auto-increment */
@@ -41,18 +41,22 @@ public class Friendship {
     
     /* JPA: Relationship with Player (Sender) */
     @Valid
+    /*@ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "sender_id", referencedColumnName = "id", nullable = false)*/
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "sender_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "sender_id")
     @NotNull(message = "Sender cannot be null")
     private Player sender;
 
-    /* JPA: Relationship with Player (Recever) */
+    /* JPA: Relationship with Player (Receiver) */
     @Valid
+    /*@ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "receiver_id", referencedColumnName = "id", nullable = false)*/
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "receiver_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "receiver_id")
     @NotNull(message = "Receiver cannot be null")
     private Player receiver;
-    
+
     /* JPA: Status field (enum mapped as String) */
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

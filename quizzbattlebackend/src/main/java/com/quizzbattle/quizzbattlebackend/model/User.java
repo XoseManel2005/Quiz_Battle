@@ -37,7 +37,7 @@ import lombok.experimental.SuperBuilder;
 })
 /* Swagger */
 @Schema(oneOf = { Admin.class, Player.class }, discriminatorProperty = "role")
-@Table(name = "users", indexes = { 
+@Table(name = "user", indexes = { 
     @Index(name = "idx_role", columnList = "role", unique = false),
     @Index(name = "idx_username", columnList = "username", unique = true),
     @Index(name = "idx_email", columnList = "email", unique = true)
@@ -45,7 +45,7 @@ import lombok.experimental.SuperBuilder;
 /* Lombok */
 @Data
 @NoArgsConstructor
-@SuperBuilder
+//@SuperBuilder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class User implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -73,7 +73,7 @@ public abstract class User implements Serializable {
     @Size(min = MIN_USERNAME, max = MAX_USERNAME)
     @Column(unique = true, nullable = false)
     protected String username;
-
+    
     /* Email */
     @Email
     @Column(unique = true, nullable = true)
@@ -86,18 +86,6 @@ public abstract class User implements Serializable {
     @Column(nullable = false)
     protected String password;
 
-    /* ID de Google (opcional, si inicia sesión con Google) */
-    @Column(unique = true)
-    protected String googleId;
-
-    /* Token para notificaciones push (FCM) */
-    @Column(columnDefinition = "TEXT")
-    protected String fcmToken;
-
-    /* Foto de perfil (URL) */
-    @Column(columnDefinition = "TEXT")
-    protected String profilePicture;
-
     /* Rol */
     @NotNull
 	/* JPA */
@@ -106,13 +94,13 @@ public abstract class User implements Serializable {
 	protected Role role;
 
     /* Fechas de registro y actualización */
-    @Column(nullable = true, updatable = false)
+    @Column(name = "created_at", nullable = true, updatable = false)
     protected LocalDateTime createdAt;
 
-    @Column(nullable = true)
+    @Column(name = "updated_at", nullable = true)
     protected LocalDateTime updatedAt;
 
-    @Column
+    @Column(name = "last_login")
     protected LocalDateTime lastLogin;
 
     /* Métodos para actualizar fechas automáticamente */
@@ -140,7 +128,7 @@ public abstract class User implements Serializable {
 
     @JsonIgnore
     public String getInfo() {
-        return "User: " + username + " (" + email + ")";
+        return "User:" +email;
     }
 
 
