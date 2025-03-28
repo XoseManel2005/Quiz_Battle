@@ -3,6 +3,7 @@ package com.quizzbattle.quizzbattlebackend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/friendship")
 @SecurityRequirement(name = "Bearer Authentication")
+@Validated
 public class FriendshipController {
 
 	@Autowired
@@ -45,13 +47,13 @@ public class FriendshipController {
 		return friendshipService.findAll(player);
 	}
 	
-	@Operation(summary = "Find all friendships filtered by player & status", description = "Retrieve all friendships from player")
+	@Operation(summary = "Find all friendships filtered by receiver & status", description = "Retrieve all friendships from receiver")
 	@ApiResponse(responseCode = "200", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Friendship.class))) }, description = "Friendships retrieved successfully")
 	@GetMapping("/find/by/player/status")
 	public List<Friendship> findAllByReciverAndStatus(
-			@Parameter(description = "Username of the player", required = true) @RequestParam(value = "username") String username,
-			@RequestParam(value = "status", required = false) Status status) {
+			@Parameter(description = "Username of the receiver", required = true) @RequestParam(value = "username") String username,
+			@RequestParam(value = "status", required = true) Status status) {
 
 		Player player = (Player) userService.getByUsername(username);
 		return friendshipService.findAllByReceiverAndStatus(player, status);
